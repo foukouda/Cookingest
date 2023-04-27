@@ -1,6 +1,5 @@
 using System;
 using MySql.Data.MySqlClient;//utilisation de la bibliothèque
-
 using static System.Console;
 
 namespace projet
@@ -20,7 +19,7 @@ namespace projet
            
             NomRec = nomRec;
             CategorieRec = categorieRec;
-            this.descriptifRec = descriptifRec;
+            descriptifRec = descriptifRec;
             Prix = prix;
             PtsBonus = ptsBonus;
         }
@@ -64,7 +63,16 @@ namespace projet
             string descriptifRec = Saisie("Écrire le descriptif de la recette");
             decimal prix = SaisieEntier("Écrire le prix de la recette");
             int ptsBonus = SaisieEntier("Écrire le nombre de points bonus de la recette");
+            recette recette = new recette(nomRec, categorieRec, descriptifRec, prix, ptsBonus);
+            MySqlConnection maConnection = new MySqlConnection("SERVER=localhost;PORT=3306;DATABASE=COOKINGUEST;UID=root;PASSWORD=root;");
+            maConnection.Open();
+            string query = $"INSERT INTO Client (nomRec,categorieRec,descriptifRec,prix,ptsBonus) VALUES ('{nomRec}', '{categorieRec}', {descriptifRec}, '{prix}', '{ptsBonus}');";
+            MySqlCommand command = new MySqlCommand(query, maConnection);
+            command.ExecuteNonQuery();
+            command.ExecuteNonQuery();
+            return recette = new recette(nomRec, categorieRec, descriptifRec, prix, ptsBonus);
         }
+
         #endregion
     }
 }
