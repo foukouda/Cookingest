@@ -1,139 +1,71 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MySql.Data.MySqlClient;//utilisation de la bibliothèque
 
-namespace projet
+namespace Cookieges_projet
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+       static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Console.WindowWidth = 80;
+            Console.BufferWidth = 80;
+
+            string cookinguestAscii = @"
+  ____                            _       _   
+ / ___|___  _ __  _ __   ___  _ __(_) __ _| |_ 
+| |   / _ \| '_ \| '_ \ / _ \| '__| |/ _` | __|
+| |__| (_) | | | | | | | (_) | |  | | (_| | |_ 
+ \____\___/|_| |_|_| |_|\___/|_|  |_|\__,_|\__|
+            ";
+
+            string[] menuItems = new string[]
+            {
+                "Option 1",
+                "Option 2",
+                "Option 3",
+                "Option 4",
+                "Quitter"
+            };
+
+            int selectedIndex = 0;
+
+            while (true)
+            {
+                Console.Clear();
+                Console.WriteLine(cookinguestAscii);
+
+                for (int i = 0; i < menuItems.Length; i++)
+                {
+                    if (selectedIndex == i)
+                    {
+                        Console.BackgroundColor = ConsoleColor.White;
+                        Console.ForegroundColor = ConsoleColor.Black;
+                    }
+
+                    Console.WriteLine(String.Format("{0," + ((Console.WindowWidth / 2) + (menuItems[i].Length / 2)) + "}", menuItems[i]));
+
+                    Console.ResetColor();
+                }
+
+                ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+
+                if (keyInfo.Key == ConsoleKey.UpArrow)
+                {
+                    selectedIndex = (selectedIndex - 1 + menuItems.Length) % menuItems.Length;
+                }
+                else if (keyInfo.Key == ConsoleKey.DownArrow)
+                {
+                    selectedIndex = (selectedIndex + 1) % menuItems.Length;
+                }
+                else if (keyInfo.Key == ConsoleKey.Enter)
+                {
+                    break;
+                }
+            }
+
+            Console.Clear();
+            Console.WriteLine($"Vous avez sélectionné {menuItems[selectedIndex]}.");
+            Console.ReadLine();
         }
-    
-//verif adresse mail 
-static bool verifMail(string mail)
-{
-    bool valide = false;
-    string[] mailSplit = mail.Split('@');
-    if (mailSplit.Length != 2)
-    {
-        
     }
-    else
-    {
-        string[] mailSplit2 = mailSplit[1].Split('.');
-        if (mailSplit2.Length != 2)
-        {
-            Console.WriteLine("Adresse mail invalide");
-        }
-        else
-        {
-            Console.WriteLine("Adresse mail valide");
-        }
-    }
-    return valide ;
 }
-
-//verif de mots passe + barre de chargement 
-
-static int verifMdp(string mdp, string prenom, string nom)
-{
-    int a=0;
-    if (mdp.Length < 8)
-    {
-        a=10;
-    }
-    else if (mdp.Length > 15)
-    {
-       a=10;
-    }
-    else if (mdp.Contains(" "))
-    {
-       a=10;
-    }
-    else if (mdp.Contains("1234567890"))
-    {
-        a++; 
-    }
-    else if (mdp.Contains("azertyuiop"))
-    {
-        a++;
-    }
-    else if (mdp.Contains("AZERTYUIOP"))
-    {
-        a++;
-    }
-    return a;
-}
-//création d'un nouveau compte client 
-static void CreationCompteClient()
-{
- 
- 
-    Console.WriteLine("Veuillez saisir votre nom");
-    string? nom = Console.ReadLine();
-
- if (nom==null)
- {
-    do
-    {
-        Console.WriteLine("Veuillez saisir un nom valide");
-        nom = Console.ReadLine();
-
-    }while (nom == null);
- }  
-    Console.WriteLine("Veuillez saisir votre prenom");
-    string? prenom =Console.ReadLine();
-
- if (prenom==null)
- {
-    do
-    { 
-        Console.WriteLine("Veuillez saisir un prenom valide");
-        prenom = Console.ReadLine();
-
-    } while (prenom == null);
- }
-    Console.WriteLine("Veuillez saisir votre adresse mail");
-    string? adressemail = Console.ReadLine();
-
- if (adressemail == null || verifMail(adressemail) == false)
- {
-    do
-    {
-
-        Console.WriteLine("Veuillez saisir une adresse mail valide");
-        adressemail = Console.ReadLine();
-
-    }while (adressemail == null || verifMail(adressemail) == false);
-
- }
-
-   
-    string? mdp = Console.ReadLine();
-    if (mdp == null || verifMdp(mdp,prenom,nom) >10)
-    {
-        do
-        {
-            Console.WriteLine("Veuillez saisir un mot de passe valide");
-            mdp = Console.ReadLine();
-        } while (mdp == null || verifMdp(mdp, prenom, nom) > 10);
-    }
-
-  
-   
-}
- }
-}
-
-    
-
-
-
-
-
-
-
