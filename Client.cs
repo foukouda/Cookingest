@@ -6,27 +6,26 @@ namespace Cookieges_projet
     public class Client
     {
         #region // Attributs
-        private int Id { get; set; }
         private string Nom { get; set; }
         private string Prenom { get; set; }
         private int Age { get; set; }
         private string Telephone { get; set; }
         private string Email { get; set; }  
-        private string adresse { get; set; }
+        private string Domicile { get; set; }
         private int PtsBonus { get; set; }
         private bool Createur { get; set; }
         private string Mdp { get; set; }
 
         // Constructeur
-        public Client(int id, string nom, string prenom, int age, string telephone, string email, string adresse, int PtsBonus, bool createur, string Mdp)
+        public Client(string nom, string prenom, int age, string telephone, string email, string Domicile, int PtsBonus, bool createur, string Mdp)
         {
-            Id = id;
+    
             Nom = nom;
             Prenom = prenom;
             Age = age;
             Telephone = telephone;
             Email = email;
-            this.adresse = adresse;
+            this.Domicile = Domicile;            
             this.PtsBonus = PtsBonus;
             Createur = createur;
             this.Mdp = Mdp;
@@ -67,11 +66,6 @@ namespace Cookieges_projet
         public static Client CreateurClient()
         {
             // Saisie des informations
-            string nom = Saisie("Écrire votre nom");
-            string prenom = Saisie("Écrire votre prénom");
-            int age = SaisieEntier("Écrire votre âge");
-            string telephone = Saisie("Écrire votre téléphone");
-            string adresse = Saisie("Écrire votre adresse");
             string email;
             bool go_on = true;
             do{
@@ -92,10 +86,13 @@ namespace Cookieges_projet
                     Console.WriteLine("Votre email n'est pas valide");
                 }
             } while (go_on); 
-
+            string nom = Saisie("Écrire votre nom");
+            string prenom = Saisie("Écrire votre prénom");
             bool createur = SaisieBooleen("Écrire si vous êtes créateur (true/false)");
+            int age = SaisieEntier("Écrire votre âge");
+            string telephone = Saisie("Écrire votre téléphone");
+            string Domicile = Saisie("Écrire votre adresse");
             string mdp = Saisie("Écrire votre mot de passe");
-
             // Vérification du mot de passe
             bool verif;
             do
@@ -129,8 +126,14 @@ namespace Cookieges_projet
                 Console.WriteLine("Les mots de passe ne correspondent pas");
                 mdp2 = Saisie("Réécrire votre mot de passe");
             }
-
-            return new Client(1, nom, prenom, age, telephone, adresse, email, 0, createur, mdp);
+            new Client(nom, prenom, age, telephone, Domicile, email, 0, createur, mdp);
+            // Ajout dans la base de données
+            MySqlConnection maConnection = new MySqlConnection("SERVER=localhost;PORT=3306;DATABASE=COOKINGUEST;UID=root;PASSWORD=root;");
+            maConnection.Open();
+            string query = $"INSERT INTO Client (Nom, Prenom, Age, Telephone, Domicile, Mail, PtsBonus, Createur, Mdp) VALUES ('{nom}', '{prenom}', {age}, '{telephone}', '{Domicile}', '{email}', 0, {createur}, '{mdp}');";
+            MySqlCommand command = new MySqlCommand(query, maConnection);
+            command.ExecuteNonQuery();
+            return new Client(nom, prenom, age, telephone, Domicile, email, 0, createur, mdp);
         }
         #endregion
 
@@ -143,8 +146,11 @@ namespace Cookieges_projet
             string query = $"SELECT Mail FROM Client WHERE Mail = '{email}';";
             MySqlCommand command = new MySqlCommand(query, maConnection);
             
-            return email == command.ExecuteScalar().ToString();
+            return command.ExecuteScalar() != null;
         }
+
+        
+        
         
         #endregion
     }
